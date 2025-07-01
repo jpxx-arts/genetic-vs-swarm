@@ -21,13 +21,9 @@ class GeneticAlgorithm:
         self.internal_divisions = 0
 
     def _initialize_population(self):
-        self.population = []
-
-        for _ in range(self.pop_size):
-            individual = [np.random.uniform(
-                self.bounds[0], self.bounds[1]) for _ in range(2)]
-
-            self.population.append(individual)
+        self.population = np.random.uniform(
+            self.bounds[0], self.bounds[1], (self.pop_size, 2)
+        ).tolist()
 
     def _evaluate_individual(self, individual):
         x, y = individual

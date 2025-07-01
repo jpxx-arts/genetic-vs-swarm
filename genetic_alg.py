@@ -123,8 +123,10 @@ class GeneticAlgorithm:
             # Critério de convergência: se não houver melhora por 20 gerações
             if gen - last_improvement_gen > 20 and self.convergence_info is None:
                 self.convergence_info = (self.func_evaluator.get_stats(),
-                                         self.internal_multiplications, self.internal_divisions)
+                                         self.internal_multiplications,
+                                         self.internal_divisions)
 
         if self.convergence_info is None:
             self.convergence_info = (self.func_evaluator.get_stats(),
-                                     self.internal_multiplications, self.internal_divisions)
+                                     self.internal_multiplications,
+                                     self.internal_divisions)

@@ -27,7 +27,9 @@ class ParticleSwarmOptimization:
     def _initialize_swarm(self):
         self.particles_pos = np.random.uniform(
             self.bounds[0], self.bounds[1], (self.swarm_size, 2))
+
         self.particles_vel = np.random.uniform(-1, 1, (self.swarm_size, 2))
+
         self.particles_pbest_pos = self.particles_pos.copy()
 
     def run(self):
@@ -50,7 +52,8 @@ class ParticleSwarmOptimization:
                     self.gbest_val = current_val
                     self.gbest_pos = self.particles_pos[i].copy()
                     self.global_min_info = (self.func_evaluator.get_stats(),
-                                            self.internal_multiplications, self.internal_divisions)
+                                            self.internal_multiplications,
+                                            self.internal_divisions)
                     last_improvement_iter = it
 
             for i in range(self.swarm_size):
@@ -66,21 +69,31 @@ class ParticleSwarmOptimization:
                 # Total: 10 multiplicações por partícula.
                 self.internal_multiplications += 10
 
+                # c1*r1*(pi - xij)
                 cognitive_vel = self.c1 * r1 * \
                     (self.particles_pbest_pos[i] - self.particles_pos[i])
+
+                # c2*r2*(gi - xij)
                 social_vel = self.c2 * r2 * \
                     (self.gbest_pos - self.particles_pos[i])
+
+                # vij = w*vij + c1*r1*(pi - xij) + c2*r2*(gi - xij)
                 self.particles_vel[i] = self.w * \
                     self.particles_vel[i] + cognitive_vel + social_vel
 
+                # xi = xi + vi
                 self.particles_pos[i] += self.particles_vel[i]
+
+                # Garante que o indivíduo permaneça dentro dos limites
                 self.particles_pos[i] = np.clip(
                     self.particles_pos[i], self.bounds[0], self.bounds[1])
 
             if it - last_improvement_iter > 20 and self.convergence_info is None:
                 self.convergence_info = (self.func_evaluator.get_stats(),
-                                         self.internal_multiplications, self.internal_divisions)
+                                         self.internal_multiplications,
+                                         self.internal_divisions)
 
         if self.convergence_info is None:
             self.convergence_info = (self.func_evaluator.get_stats(),
-                                     self.internal_multiplications, self.internal_divisions)
+                                     self.internal_multiplications,
+                                     self.internal_divisions)
